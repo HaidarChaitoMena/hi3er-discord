@@ -1,5 +1,5 @@
 from os import getenv
-from discord import Intents, Client, Message, Embed,Colour
+from discord import Intents, Client, Message, Embed,DMChannel
 from dotenv import load_dotenv
 from db import db_helper
 from model import Valk
@@ -27,7 +27,7 @@ async def send_msg(message: Message, user_msg: str) -> None:
         embed.add_field(name='Names',value=valk_names)
         embed.add_field(name='Acronym',value=acronyms)
 
-        await message.author.send(embed=embed)
+        await message.channel.send(embed=embed)
     if user_msg.lower() in db_client.ACRONYM:
         valk: Valk = db_client.get_valk_by_acronym(user_msg.lower())
         embed = embed_card(valk.name,valk.color_hex,valk.image)
@@ -46,9 +46,9 @@ async def send_msg(message: Message, user_msg: str) -> None:
                     new_embed = embed.fields[embed_field_index].value + '\n' + signet.name
                     embed.set_field_at(embed_field_index,name=embed.fields[embed_field_index].name,value= new_embed)
                     
-        await message.author.send(embed=embed)
+        await message.channel.send(embed=embed)
         
-def embed_card(title:str,color_hex=0xEB459F,thumbnail = 'https://media.discordapp.net/attachments/1224297288730542100/1224297355122315304/sena.png?ex=661cfac3&is=660a85c3&hm=ca7bf61dd1a7f9e5bd06aed1c5d1e9719b795538f5e16b0e09dbf8f697473c7c&=&format=webp&quality=lossless&width=240&height=256'):
+def embed_card(title:str,color_hex=0xEB459F,thumbnail = 'https://cdn.discordapp.com/attachments/1224297288730542100/1224327874278850623/Miracle__Magical_Girl_Chibi.png?ex=661d1730&is=660aa230&hm=86ed08d3c5cc8daca36ecdcd0e528ad7aab163ea78c093c7deb3893455131f6b&'):
     embed = Embed(
         colour=color_hex,
     )
@@ -67,7 +67,10 @@ async def on_ready() -> None :
 async def on_message(message:Message) -> None :
     if message.author == client.user:
         return
-    
+    if isinstance(message.channel, DMChannel):
+        return
+    if message.channel.name != 'hi3er':
+        return
     await send_msg(message,str(message.content))
     
 def main() -> None:
