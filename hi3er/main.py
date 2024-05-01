@@ -32,9 +32,9 @@ async def faq(interaction:Interaction) -> None:
     name="valk",
     description="Get ER guide of selected valkery"
 )
-async def valk(interaction:Interaction,name:str) -> None:
-    if name.lower() in db_client.ACRONYM:
-        valk: Valk = db_client.get_valk_by_acronym(name.lower())
+async def valk(interaction:Interaction,valkery_name:str) -> None:
+    if valkery_name.lower() in db_client.ACRONYM:
+        valk: Valk = db_client.get_valk_by_acronym(valkery_name.lower())
         embed = embed_card(valk.name,valk.color_hex,valk.image)
         
         
